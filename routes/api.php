@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ApiLoginController;
+use App\Http\Controllers\ApiAuthController;
 use App\Http\Controllers\EventCommentController;
 use App\Http\Controllers\EventController;
 use Illuminate\Support\Facades\Route;
@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::post('/login', [ApiLoginController::class, 'token']);
-Route::middleware('auth:sanctum')->get('/user', [ApiLoginController::class, 'user']);
+Route::post('/login', [ApiAuthController::class, 'token']);
+Route::middleware('auth:sanctum')->get('/user', [ApiAuthController::class, 'user']);
 
 Route::group(['middleware' => 'auth:sanctum', 'prefix' => '/events'], function () {
     Route::get('/', [EventController::class, 'index']);
@@ -31,4 +31,3 @@ Route::group(['middleware' => 'auth:sanctum', 'prefix' => '/comments'], function
     Route::post('/', [EventCommentController::class, 'store']);
     Route::delete('/{id}', [EventCommentController::class, 'destroy']);
 });
-

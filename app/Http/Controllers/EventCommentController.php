@@ -7,11 +7,13 @@ use App\Rules\CommentThrottling;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
+use Response;
+use Symfony\Component\HttpFoundation\Response as Statuses;
 
 class EventCommentController extends Controller
 {
-    public function store(Request $request) : JsonResponse {
+    public function store(Request $request) : JsonResponse
+    {
         $user = $request->user();
 
         $request->validate([
@@ -24,27 +26,28 @@ class EventCommentController extends Controller
             'user_id' => $user->id,
         ]);
 
-        return response()->json(compact('comment'), Response::HTTP_CREATED);
+        return response()->json(compact('comment'), Statuses::HTTP_CREATED);
     }
 
-    public function destroy(Request $request, int $id) : JsonResponse {
+    public function destroy(Request $request, int $id) : JsonResponse
+    {
         $comment = EventComment::with('event')->find($id);
 
         if (
             $request->user()->id !== $comment->user_id
             && $request->user()->id !== $comment->event->user_id
         ) {
-            return response()->json([], Response::HTTP_FORBIDDEN);
+            return Response::json([], Statuses::HTTP_FORBIDDEN);
         }
 
         try {
             $comment->delete();
 
-            return response()->json([]);
+            return Response::json([]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
+            return Response::json([], Statuses::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

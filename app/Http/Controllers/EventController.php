@@ -6,35 +6,49 @@ use App\Models\Event;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
-use Symfony\Component\HttpFoundation\Response;
+use Response;
+use Symfony\Component\HttpFoundation\Response as Statuses;
 
 class EventController extends Controller
 {
-    public function index(Request $request) : JsonResponse {
-        $events = Event::whereUserId($request->user()->id)->get();
+    public function index(Request $request) : JsonResponse
+    {
+        $query = Event::query();
 
-        return response()->json(compact('events'));
+        collect($request->only('title'))->each(function ($key, $value) use ($query) {
+            $query->where($key, $value);
+        });
+
+        $events = $query->get();
+
+        return Response::json(compact('events'));
     }
 
-    public function store(Request $request) : JsonResponse {
+    public function store(Request $request) : JsonResponse
+    {
         $request->validate([
             'title' => 'required|string',
             'description' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
         ]);
 
-        $event = Event::create($request->all());
+        $event = Event::create([
+            'title' => $request->get('title'),
+            'description' => $request->get('description'),
+            'user_id' => $request->user()->id,
+        ]);
 
-        return response()->json(compact('event'), Response::HTTP_CREATED);
+        return Response::json(compact('event'), Statuses::HTTP_CREATED);
     }
 
-    public function show(int $id) : JsonResponse {
-        $event = Event::find($id);
+    public function show(int $id) : JsonResponse
+    {
+        $event = Event::with('comments')->find($id);
 
-        return response()->json(compact('event'));
+        return Response::json(compact('event'));
     }
 
-    public function update(Request $request, int $id) : JsonResponse {
+    public function update(Request $request, int $id) : JsonResponse
+    {
         $request->validate([
             'title' => 'required|string',
             'description' => 'required|string|max:255',
@@ -42,22 +56,26 @@ class EventController extends Controller
 
         $event = Event::find($id)->update($request->all());
 
-        return response()->json(compact('event'));
+        return Response::json(compact('event'));
     }
 
-    public function destroy(Request $request, int $id) : JsonResponse {
+    public function destroy(Request $request, int $id) : JsonResponse
+    {
         $event = Event::find($id);
 
         if ($event->user_id !== $request->user()->id) {
-            return response()->json([], Response::HTTP_FORBIDDEN);
+            return Response::json([], Statuses::HTTP_FORBIDDEN);
         }
 
         try {
+            $event->comments()->delete();
             $event->delete();
-            return response()->json([]);
+
+            return Response::json([]);
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            return response()->json([], Response::HTTP_INTERNAL_SERVER_ERROR);
+
+            return Response::json([], Statuses::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
