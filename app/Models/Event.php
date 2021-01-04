@@ -11,6 +11,8 @@ class Event extends Model
 {
     use HasFactory;
 
+    protected $with = ['user:id,name,email'];
+
     protected $fillable = [
         'title',
         'description',

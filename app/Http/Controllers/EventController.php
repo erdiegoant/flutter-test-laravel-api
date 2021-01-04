@@ -35,14 +35,14 @@ class EventController extends Controller
             'title' => $request->get('title'),
             'description' => $request->get('description'),
             'user_id' => $request->user()->id,
-        ]);
+        ])->load(['user:id,name,email']);
 
         return Response::json(compact('event'), Statuses::HTTP_CREATED);
     }
 
     public function show(int $id) : JsonResponse
     {
-        $event = Event::with('comments')->find($id);
+        $event = Event::with(['comments', 'comments.user:id,name,email'])->find($id);
 
         return Response::json(compact('event'));
     }
