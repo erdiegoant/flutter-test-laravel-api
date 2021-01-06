@@ -12,8 +12,14 @@ class CommentThrottling implements Rule
     }
 
     public function passes($attribute, $value) : bool {
-        return $this->user->lastComment?->created_at->lt(
-            now()->subMinutes(2)
+        if ($this->user->comments()->count() === 0) {
+            return true;
+        }
+
+        $lastComment = $this->user->comments()->latest()->first();
+
+        return $lastComment->created_at->lt(
+            now()->subSeconds(5)
         );
     }
 

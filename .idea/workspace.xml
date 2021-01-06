@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="90e69103-fb88-47b5-90fe-a1c921c14db2" name="Default Changelist" comment="">
+    <list default="true" id="90e69103-fb88-47b5-90fe-a1c921c14db2" name="Default Changelist" comment="WIP">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/EventCommentController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/EventCommentController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/Http/Controllers/EventController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/EventController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Event.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Event.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Models/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/Rules/CommentThrottling.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Rules/CommentThrottling.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -20,6 +22,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/app/Http/Controllers/EventController.php" root0="FORCE_HIGHLIGHTING" root1="SKIP_INSPECTION" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration">
     <include_path>
@@ -185,7 +190,10 @@
       <workItem from="1609472526562" duration="41000" />
       <workItem from="1609575071904" duration="682000" />
       <workItem from="1609652045141" duration="5667000" />
-      <workItem from="1609742897486" duration="2044000" />
+      <workItem from="1609742897486" duration="2451000" />
+      <workItem from="1609800409363" duration="917000" />
+      <workItem from="1609824498621" duration="641000" />
+      <workItem from="1609896821398" duration="2740000" />
     </task>
     <task id="LOCAL-00001" summary="Basic api setup">
       <created>1609308084595</created>
@@ -201,7 +209,14 @@
       <option name="project" value="LOCAL" />
       <updated>1609665524824</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Eager load user relationship on Event model">
+      <created>1609747636578</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1609747636578</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +236,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Basic api setup" />
+    <MESSAGE value="Eager load user relationship on Event model" />
     <MESSAGE value="WIP" />
     <option name="LAST_COMMIT_MESSAGE" value="WIP" />
   </component>

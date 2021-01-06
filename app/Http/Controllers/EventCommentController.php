@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\EventComment;
 use App\Rules\CommentThrottling;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -22,9 +23,11 @@ class EventCommentController extends Controller
         ]);
 
         $comment = EventComment::create([
-            ...$request->all(),
+            'comment' => $request->get('comment'),
+            'event_id' => $request->get('event_id'),
             'user_id' => $user->id,
         ]);
+        $comment->load(['user:id,name,email']);
 
         return response()->json(compact('comment'), Statuses::HTTP_CREATED);
     }
@@ -44,7 +47,7 @@ class EventCommentController extends Controller
             $comment->delete();
 
             return Response::json([]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error($e->getMessage());
 
             return Response::json([], Statuses::HTTP_INTERNAL_SERVER_ERROR);

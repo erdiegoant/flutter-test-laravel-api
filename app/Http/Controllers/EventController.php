@@ -15,7 +15,7 @@ class EventController extends Controller
     {
         $query = Event::query();
 
-        collect($request->only('title'))->each(function ($key, $value) use ($query) {
+        collect($request->only(['title', 'description']))->each(function ($key, $value) use ($query) {
             $query->where($key, $value);
         });
 
@@ -28,7 +28,7 @@ class EventController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string',
         ]);
 
         $event = Event::create([
@@ -51,7 +51,7 @@ class EventController extends Controller
     {
         $request->validate([
             'title' => 'required|string',
-            'description' => 'required|string|max:255',
+            'description' => 'required|string',
         ]);
 
         $event = Event::find($id)->update($request->all());
