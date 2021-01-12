@@ -16,11 +16,17 @@ class EventComment extends Model
         'comment',
     ];
 
-    public function user() : BelongsTo {
+    protected $with = [
+        'user:id,email,name',
+    ];
+
+    public function user() : BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function event() : BelongsTo {
+    public function event() : BelongsTo
+    {
         return $this->belongsTo(Event::class);
     }
 }

@@ -59,11 +59,13 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function events() : HasMany {
+    public function events() : HasMany
+    {
         return $this->hasMany(Event::class);
     }
 
-    public function comments() : HasMany {
+    public function comments() : HasMany
+    {
         return $this->hasMany(EventComment::class);
     }
 }

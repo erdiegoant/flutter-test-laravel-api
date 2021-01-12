@@ -19,11 +19,22 @@ class Event extends Model
         'user_id',
     ];
 
-    public function user() : BelongsTo {
+    public function user() : BelongsTo
+    {
         return $this->belongsTo(User::class);
     }
 
-    public function comments() : HasMany {
+    public function comments() : HasMany
+    {
         return $this->hasMany(EventComment::class);
+    }
+
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['title'] ?? null, function ($query, $title) {
+            $query->whereTitle($title);
+        })->when($filters['description'] ?? null, function ($query, $description) {
+            $query->whereDescription($description);
+        });
     }
 }

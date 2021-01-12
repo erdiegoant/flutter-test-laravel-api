@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Response;
-use Symfony\Component\HttpFoundation\Response as Statuses;
 
 class EventCommentController extends Controller
 {
@@ -27,9 +26,9 @@ class EventCommentController extends Controller
             'event_id' => $request->get('event_id'),
             'user_id' => $user->id,
         ]);
-        $comment->load(['user:id,name,email']);
+        $comment->load(['user']);
 
-        return response()->json(compact('comment'), Statuses::HTTP_CREATED);
+        return response()->json(compact('comment'), 201);
     }
 
     public function destroy(Request $request, int $id) : JsonResponse
@@ -40,7 +39,7 @@ class EventCommentController extends Controller
             $request->user()->id !== $comment->user_id
             && $request->user()->id !== $comment->event->user_id
         ) {
-            return Response::json([], Statuses::HTTP_FORBIDDEN);
+            return Response::json([], 403);
         }
 
         try {
@@ -50,7 +49,7 @@ class EventCommentController extends Controller
         } catch (Exception $e) {
             Log::error($e->getMessage());
 
-            return Response::json([], Statuses::HTTP_INTERNAL_SERVER_ERROR);
+            return Response::json([], 500);
         }
     }
 }

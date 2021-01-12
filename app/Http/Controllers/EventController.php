@@ -7,19 +7,12 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Response;
-use Symfony\Component\HttpFoundation\Response as Statuses;
 
 class EventController extends Controller
 {
     public function index(Request $request) : JsonResponse
     {
-        $query = Event::query();
-
-        collect($request->only(['title', 'description']))->each(function ($key, $value) use ($query) {
-            $query->where($key, $value);
-        });
-
-        $events = $query->get();
+        $events = Event::filter($request->only(['title', 'description']))->get();
 
         return Response::json(compact('events'));
     }
@@ -35,14 +28,14 @@ class EventController extends Controller
             'title' => $request->get('title'),
             'description' => $request->get('description'),
             'user_id' => $request->user()->id,
-        ])->load(['user:id,name,email']);
+        ])->load(['user']);
 
-        return Response::json(compact('event'), Statuses::HTTP_CREATED);
+        return Response::json(compact('event'), 201);
     }
 
     public function show(int $id) : JsonResponse
     {
-        $event = Event::with(['comments', 'comments.user:id,name,email'])->find($id);
+        $event = Event::with(['comments'])->find($id);
 
         return Response::json(compact('event'));
     }
@@ -64,7 +57,7 @@ class EventController extends Controller
         $event = Event::find($id);
 
         if ($event->user_id !== $request->user()->id) {
-            return Response::json([], Statuses::HTTP_FORBIDDEN);
+            return Response::json([], 403);
         }
 
         try {
@@ -75,7 +68,7 @@ class EventController extends Controller
         } catch (\Exception $e) {
             Log::error($e->getMessage());
 
-            return Response::json([], Statuses::HTTP_INTERNAL_SERVER_ERROR);
+            return Response::json([], 500);
         }
     }
 }

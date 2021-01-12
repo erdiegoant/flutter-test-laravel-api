@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Response;
-use Symfony\Component\HttpFoundation\Response as Statuses;
 
 class ApiAuthController extends Controller
 {
@@ -20,21 +19,21 @@ class ApiAuthController extends Controller
             'device_name' => 'required',
         ]);
 
-        $user = User::whereEmail($request->email)->first();
+        $user = User::whereEmail($request->get('email'))->first();
 
         try {
-            if ( ! $user || ! Hash::check($request->password, $user->password)) {
+            if ( ! $user || ! Hash::check($request->get('password'), $user->password)) {
                 throw ValidationException::withMessages([
                     'email' => ['The provided credentials are incorrect.'],
                 ]);
             }
 
-            $token = $user->createToken("{$user->name}'s {$request->device_name}")->plainTextToken;
+            $token = $user->createToken("{$user->name}'s {$request->get('device_name')}")->plainTextToken;
 
             return Response::json(compact('token'));
 
         } catch (ValidationException $exception) {
-            return Response::json($exception->errors(), Statuses::HTTP_BAD_REQUEST);
+            return Response::json($exception->errors(), 400);
         }
     }
 
